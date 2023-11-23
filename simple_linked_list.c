@@ -7,41 +7,57 @@ typedef struct s_item
 	struct s_item	*next_item;
 }	t_item;
 
+t_item	*create_item(void)
+{
+	t_item	*temp;
+
+	temp = (t_item *) malloc(sizeof(t_item));
+	temp->next_item = NULL;
+	return (temp);
+}
+
+t_item	*add_item(t_item *head, int val)
+{
+	t_item	*temp;
+	t_item	*p;
+
+	temp = create_item();
+	temp->num = val;
+	if (head == NULL)
+		head = temp;
+	else
+	{
+		p = head;
+		while (p->next_item != NULL)
+			p = p->next_item;
+		p->next_item = temp;
+	}
+	return (head);
+}
+
 int	main(int ac, char **av)
 {
-	t_item	*item_list;
-	int		num_item;
+	t_item	*head;
+	t_item	*p;
 	int		i;
 
 	if (ac < 2 || ac - 2 != atoi(av[1]))
 	{
-		printf("EH NO!\n");
+		printf("Args error.\n");
 		return (1);
 	}
-	num_item = atoi(av[1]);
-
-	item_list = (t_item *) malloc(sizeof(t_item) * num_item);
-	if (!item_list)
-		printf("Memory fault.\n");
-	else
-		printf("Allocated %d elements:\n", num_item);
-	
-	i = 0;
-	while (i < num_item)
+	head = NULL;
+	i = 2;
+	while (av[i])
 	{
-		item_list[i].num = atoi(av[2 + i]);
-		if (i + 1 != num_item)
-			item_list[i].next_item = &item_list[i + 1];
-		else
-			item_list[i].next_item = NULL;
+		head = add_item(head, atoi(av[i]));
 		i++;
 	}
-
-	i = 0;
-	while (i < num_item)
+	p = head;
+	while (p != NULL)
 	{
-		printf("Item n. %d: %d | link: %p\n", i + 1, item_list[i].num, item_list[i].next_item);
-		i++;
+		printf("Data %d at %p\n", p->num, p);
+		p = p->next_item;
 	}
 	return (0);
 }
